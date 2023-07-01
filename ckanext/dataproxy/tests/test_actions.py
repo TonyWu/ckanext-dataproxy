@@ -1,6 +1,6 @@
 import paste.fixture
-import pylons.test
-import pylons.config as config
+import pyramid.test
+import pyramid.config
 import sqlalchemy
 import sqlalchemy.orm as orm
 
@@ -17,7 +17,7 @@ class TestDataproxyActions(object):
     @classmethod
     def setup_class(cls):
         '''Nose runs this method once to setup our test class.'''
-        cls.app = paste.fixture.TestApp(pylons.test.pylonsapp)
+        cls.app = paste.fixture.TestApp(pyramid.test.pyramidapp)
     
     # TODO: implement tests  
     def test_this(self):

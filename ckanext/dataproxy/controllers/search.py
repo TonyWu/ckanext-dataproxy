@@ -3,7 +3,7 @@ import json
 import decimal
 import datetime
 import time
-import pylons
+import pyramid
 import re
 import logging
 from ckan.controllers.api import ApiController
@@ -38,7 +38,7 @@ class SearchController(ApiController):
         if 'resource_id' in request_data:
             resource = Resource.get(request_data['resource_id'])
             if resource is not None and resource.url_type == 'dataproxy':
-                pylons.response.headers['Content-Type'] = 'application/json;charset=utf-8'
+                pyramid.response.headers['Content-Type'] = 'application/json;charset=utf-8'
                 return self.dataproxy_search(request_data, resource)
 
         #Default action otherwise
@@ -60,7 +60,7 @@ class SearchController(ApiController):
             #Map resources keyed by table name for fast lookup
             dataproxy_tables = dict((r.extras['table'], r) for r in resources)
             if table_name in dataproxy_tables:
-                pylons.response.headers['Content-Type'] = 'application/json;charset=utf-8'
+                pyramid.response.headers['Content-Type'] = 'application/json;charset=utf-8'
                 return self.dataproxy_search_sql(sql, dataproxy_tables[table_name])
 
         return self.action('datastore_search_sql', ver=3)
@@ -69,7 +69,7 @@ class SearchController(ApiController):
     def dataproxy_search_sql(self, sql, resource):
         #TODO: Duplicate code...
         #TODO: Internal server error if sql is incorrect (should try/catch instead)
-        secret = pylons.config.get('ckan.dataproxy.secret', False)
+        secret = pyramid.config.get('ckan.dataproxy.secret', False)
         if not secret:
             raise Exception('ckan.dataproxy.secret must be defined to encrypt/decrypt passwords')
 
@@ -129,7 +129,7 @@ class SearchController(ApiController):
         Raises:
             Exception: if ckan.dataproxy.secret configuration not set.
         """
-        secret = pylons.config.get('ckan.dataproxy.secret', False)
+        secret = pyramid.config.get('ckan.dataproxy.secret', False)
         if not secret:
             raise Exception('ckan.dataproxy.secret must be defined to encrypt/decrypt passwords')
 
